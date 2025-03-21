@@ -5,74 +5,100 @@ import json
 import joblib
 from ensure import ensure_annotations
 from box import ConfigBox
-from typing import Any
 from pathlib import Path
+from typing import Any
 from box.exceptions import BoxValueError
+
 
 @ensure_annotations
 def read_yaml(path_to_yaml: Path) -> ConfigBox:
-    """
-    Read the yaml file and return the ConfigBox object
+    """reads yaml file and returns
+
+    Args:
+        path_to_yaml (str): path like input
+
+    Raises:
+        ValueError: if yaml file is empty
+        e: empty file
+
+    Returns:
+        ConfigBox: ConfigBox type
     """
     try:
-        with open(path_to_yaml, "r") as yaml_file:
+        with open(path_to_yaml) as yaml_file:
             content = yaml.safe_load(yaml_file)
-            logger.info(f"Reading the yaml file from the path: {path_to_yaml}")
+            logger.info(f"yaml file: {path_to_yaml} loaded successfully")
             return ConfigBox(content)
     except BoxValueError:
-        raise ValueError("The yaml file is empty")
-    except Exception as e:  
-        logger.error(e)
+        raise ValueError("yaml file is empty")
+    except Exception as e:
         raise e
+        
+
 
 @ensure_annotations
 def create_directories(path_to_directories: list, verbose=True):
-    """
-    Create directories from the list of directories
+    """create list of directories
+
+    Args:
+        path_to_directories (list): list of path of directories
+        ignore_log (bool, optional): ignore if multiple dirs is to be created. Defaults to False.
     """
     for path in path_to_directories:
-        try:
-            os.makedirs(path, exist_ok=True)
-            if verbose:
-                logger.info(f"Creating directory: {path}")
-        except Exception as e:
-            logger.error(e)
-            raise e
-        
+        os.makedirs(path, exist_ok=True)
+        if verbose:
+            logger.info(f"created directory at: {path}")
+
 @ensure_annotations
 def save_json(path: Path, data: dict):
+    """save json data
+
+    Args:
+        path (Path): path to json file
+        data (dict): data to be saved in json file
     """
-    Save the data in the json format
-    """
-    with open(path, "w") as json_file:
-        json.dump(data, json_file, indent=4)
-        logger.info(f"Saving the data in the json format at the path: {path}")
+    with open(path, "w") as f:
+        json.dump(data, f, indent=4)
+
+    logger.info(f"json file saved at: {path}")
 
 @ensure_annotations
 def load_json(path: Path) -> ConfigBox:
-    """
-    Load the data from the json file
+    """load json files data
+
     Args:
-    path : Path : Path to the json file
+        path (Path): path to json file
+
     Returns:
-    ConfigBox : data as class attributes (ConfigBox object) instead of dict 
+        ConfigBox: data as class attributes instead of dict
     """
-    with open(path, "r") as json_file:
-        data = json.load(json_file)
-        logger.info(f"Loading the data from the json file at the path: {path}")
-        return ConfigBox(data)
-        
+    with open(path) as f:
+        content = json.load(f)
+
+    logger.info(f"json file loaded succesfully from: {path}")
+    return ConfigBox(content)
+
 @ensure_annotations
 def save_bin(data: Any, path: Path):
-    """
-    Save the data in the binary format
+    """save binary file
+
+    Args:
+        data (Any): data to be saved as binary
+        path (Path): path to binary file
     """
     joblib.dump(value=data, filename=path)
-    logger.info(f"Saving the data in the binary format at the path: {path}")
+    logger.info(f"binary file saved at: {path}")
 
 @ensure_annotations
 def load_bin(path: Path) -> Any:
+    """load binary data
+
+    Args:
+        path (Path): path to binary file
+
+    Returns:
+        Any: object stored in the file
     """
-    Load the data from the binary file
-    """
-    data = joblib.load(filename=path)
+    data = joblib.load(path)
+    logger.info(f"binary file loaded from: {path}")
+    return data

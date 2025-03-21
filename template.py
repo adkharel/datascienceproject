@@ -2,11 +2,11 @@ import os
 from pathlib import Path
 import logging
 
-logging.basicConfig(level=logging.INFO, format='[%(asctime)s] : %(message)s:')
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s]: %(message)s:')
 
-project_name = "datascience"
+project_name="datascience"
 
-list_of_files = [
+list_of_files=[
     ".gthub/workflows/.gitkeep",
     f"src/{project_name}/__init__.py",
     f"src/{project_name}/components/__init__.py",
@@ -18,27 +18,34 @@ list_of_files = [
     f"src/{project_name}/entity/__init__.py",
     f"src/{project_name}/entity/config_entity.py",
     f"src/{project_name}/constants/__init__.py",
-    "research/research.ipynb",
     "config/config.yaml",
-    "templates/index.html",
     "params.yaml",
     "schema.yaml",
     "main.py",
     "Dockerfile",
     "setup.py",
+    "research/research.ipynb",
+    "templates/index.html",
     "app.py"
+
 ]
 
-for filepath in list_of_files:
-    filepath = Path(filepath)
-    filedir, filename = os.path.split(filepath)
-    if filedir!="":
-        os.makedirs(filedir, exist_ok=True)
-        logging.info(f"Creating directory {filedir} for the file: {filename}")
 
+for filepath in list_of_files:
+    filepath=Path(filepath)
+    filedir,filename=os.path.split(filepath)
+
+    if filedir!="":
+        os.makedirs(filedir,exist_ok=True)
+        logging.info(f"Creating directory {filedir} for the file : {filename}")
+    
     if (not os.path.exists(filepath)) or (os.path.getsize(filepath) == 0):
-        with open(filepath, "w") as f:
+        with open(filepath,"w") as f:
+
             pass
             logging.info(f"Creating empty file: {filepath}")
+
     else:
-        logging.info(f"File already exists: {filepath}")
+        logging.info(f"{filename} is already exists")
+            
+
